@@ -64,19 +64,56 @@ public class SampleDAOImpl extends DAO implements SampleDAO {
 
 	@Override
 	public void updateSapmle(Sample sample, int id) {
-		// TODO Auto-generated method stub
-
+		try {
+			conn = getConnection();
+			String sql = "UPDATE sample(idIntents, question, respond) VALUES (?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, sample.getQuestion());
+			stmt.setString(2, sample.getRespond());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			close(conn, stmt, rs);
+		}
 	}
 
 	@Override
 	public void deleteSample(int id) {
-		// TODO Auto-generated method stub
+try {
+			conn = getConnection();
+			String sql = "DELETE sample.id, sample.question, sample.respond FROM sample\r\n"
+					+ "LEFT JOIN intents ON sample.idIntents = intents.id WHERE intents.id = ?;";
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			close(conn, stmt, rs);
+		}
 
 	}
 
 	@Override
 	public Sample getSampleByID(int id) {
-		// TODO Auto-generated method stub
+			try {
+			conn = getConnection();
+			String sql = "SELECT sample.id"
+            		+ "FROM sample "
+            		+ "WHERE sample.id = ?;";
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				Sample sample = new Sample();
+				sample.setId(rs.getInt("id"));
+				sample.setQuestion(rs.getString("question"));
+				sample.setRespond(rs.getString("respond"));
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			close(conn, stmt, rs);
+		}
 		return null;
 	}
 
