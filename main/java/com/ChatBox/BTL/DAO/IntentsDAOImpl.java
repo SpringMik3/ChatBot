@@ -80,14 +80,34 @@ public class IntentsDAOImpl extends DAO implements IntentsDAO{
 
 	@Override
 	public void updateIntents(Intents intents, int id) {
-		// TODO Auto-generated method stub
-		
+			try {
+            conn = getConnection();
+            String sql = "UPDATE intents (textIntents) VALUES (?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, intents.getTextIntents());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(conn, stmt, null);
+        }
 	}
 
 	@Override
 	public void deleteIntents(int id) {
-		// TODO Auto-generated method stub
-		
+		try {
+	        	conn = getConnection();
+	            String sql = "DELETE intents.id, intents.textIntents "
+	            		+ "FROM intents "
+	            		+ "WHERE intents.id = ?;";
+	            stmt = conn.prepareStatement(sql);
+	            stmt.setInt(1, id);
+	            rs = stmt.executeQuery();
+	        } catch (SQLException e) {
+	            throw new RuntimeException(e);
+	        } finally {
+	            close(conn, stmt, rs);
+	        }
 	}
 
 	@Override
